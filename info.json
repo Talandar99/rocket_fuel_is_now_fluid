@@ -1,0 +1,12 @@
+{
+    "name": "rocket_fuel_is_now_fluid",
+    "version": "0.1.0",
+    "title": "Rocket Fuel Is Now Fluid",
+    "author": "Talandar",
+    "dependencies": [
+        "base >= 2.0",
+        "diesel_engine"
+    ],
+    "description": "Mod that changes rocket fuel from item to fluid",
+    "factorio_version": "2.0"
+}
