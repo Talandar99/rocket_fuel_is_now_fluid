@@ -49,10 +49,15 @@ end
 
 local target_box = vanilla.collision_box
 
+local function has_fluid_energy_source(entity)
+	return entity.energy_source and entity.energy_source.type == "fluid" and entity.energy_source.fluid_box
+end
+
 for name, silo in pairs(data.raw["rocket-silo"]) do
 	if
 		silo
 		and not has_fluid_boxes(silo)
+		and not has_fluid_energy_source(silo)
 		and silo.collision_box
 		and silo.collision_box[1]
 		and silo.collision_box[2]
