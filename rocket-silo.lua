@@ -37,22 +37,47 @@ function rocketsilopipes()
 		},
 	}
 end
---add fluid_boxes to regular silo
-local silo = data.raw["rocket-silo"]["rocket-silo"]
 
-if silo then
-	silo.fluid_boxes = {
-		{
-			production_type = "input",
-			pipe_picture = rocketsilopipes(),
-			pipe_covers = pipecoverspictures(),
-			volume = 100,
-			pipe_connections = {
-				{ flow_direction = "input-output", direction = defines.direction.north, position = { 0, -4 } },
-				{ flow_direction = "input-output", direction = defines.direction.south, position = { 0, 4 } },
-				{ flow_direction = "input-output", direction = defines.direction.east, position = { 4, 0 } },
-				{ flow_direction = "input-output", direction = defines.direction.west, position = { -4, 0 } },
+local function has_fluid_boxes(entity)
+	return entity.fluid_boxes and next(entity.fluid_boxes) ~= nil
+end
+
+local vanilla = data.raw["rocket-silo"] and data.raw["rocket-silo"]["rocket-silo"]
+if not vanilla then
+	return
+end
+
+local target_box = vanilla.collision_box
+
+for name, silo in pairs(data.raw["rocket-silo"]) do
+	if
+		silo
+		and not has_fluid_boxes(silo)
+		and silo.collision_box
+		and silo.collision_box[1]
+		and silo.collision_box[2]
+		and silo.collision_box[1][1] == target_box[1][1]
+		and silo.collision_box[1][2] == target_box[1][2]
+		and silo.collision_box[2][1] == target_box[2][1]
+		and silo.collision_box[2][2] == target_box[2][2]
+	then
+		silo.fluid_boxes = {
+			{
+				production_type = "input",
+				pipe_picture = rocketsilopipes(),
+				pipe_covers = pipecoverspictures(),
+				volume = 100,
+				pipe_connections = {
+					{ flow_direction = "input-output", direction = defines.direction.north, position = { 0, -4 } },
+					{ flow_direction = "input-output", direction = defines.direction.south, position = { 0, 4 } },
+					{ flow_direction = "input-output", direction = defines.direction.east, position = { 4, 0 } },
+					{ flow_direction = "input-output", direction = defines.direction.west, position = { -4, 0 } },
+				},
 			},
-		},
-	}
+		}
+
+		silo.fluid_boxes_off_when_no_fluid_recipe = true
+
+		-- log("Added fluid input to rocket-silo: " .. name)
+	end
 end

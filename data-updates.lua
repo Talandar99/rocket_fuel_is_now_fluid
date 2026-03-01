@@ -96,5 +96,12 @@ for _, r in pairs(data.raw.recipe) do
 end
 
 for _, r in pairs(data.raw.recipe) do
-	convert_result_list(r.results, 100)
+	local changed = convert_result_list(r.results, 100)
+
+	if changed then
+		local cat = r.category or "crafting"
+		if cat == "crafting" then
+			r.category = "crafting-with-fluid"
+		end
+	end
 end
