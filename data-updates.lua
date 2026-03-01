@@ -1,21 +1,3 @@
-data.extend({
-	{
-		type = "fluid",
-		subgroup = "fluid",
-		name = "rocket-fuel",
-		default_temperature = 25,
-		base_color = { 245, 187, 0 },
-		flow_color = { 188, 125, 0 },
-		visualization_color = { 225, 167, 0 },
-		icon = "__rocket_fuel_is_now_fluid__/light-oil.png",
-		order = "a[fluid]-b[oil]-z[rocket-fuel]",
-		icon_size = 64,
-		pressure_to_speed_ratio = 0.4,
-		flow_to_energy_ratio = 0.59,
-		auto_barrel = true,
-	},
-})
-
 local centrifugepipes = assembler3pipepictures()
 centrifugepipes.north = util.empty_sprite()
 centrifugepipes.south.filename = "__rocket_fuel_is_now_fluid__/graphics/centrifugepipes/centrifuge-pipe-S.png"
@@ -35,23 +17,50 @@ data.raw["assembling-machine"]["centrifuge"].fluid_boxes = {
 }
 data.raw["assembling-machine"]["centrifuge"].fluid_boxes_off_when_no_fluid_recipe = true
 
+local function recipe_has_custom_fluidbox_index(ingredients)
+	if not ingredients then
+		return false
+	end
+	for _, ing in pairs(ingredients) do
+		local itype = ing.type or "item"
+		if itype == "fluid" and ing.fluidbox_index ~= nil then
+			return true
+		end
+	end
+	return false
+end
+
 local function convert_ingredient_list(ingredients, fluid_amount)
 	if not ingredients then
 		return false
 	end
+
 	local changed = false
+	local use_barrel = recipe_has_custom_fluidbox_index(ingredients)
+
 	for _, ing in pairs(ingredients) do
 		local itype = ing.type or "item"
 		local name = ing.name or ing[1]
+
 		if itype == "item" and name == "rocket-fuel" then
 			local amount = ing.amount or ing[2] or 1
+
 			ing[1], ing[2] = nil, nil
-			ing.type = "fluid"
-			ing.name = "rocket-fuel"
-			ing.amount = fluid_amount * amount
+
+			if use_barrel then
+				ing.type = "item"
+				ing.name = "rocket-fuel-barrel"
+				ing.amount = amount * 2
+			else
+				ing.type = "fluid"
+				ing.name = "rocket-fuel"
+				ing.amount = fluid_amount * amount
+			end
+
 			changed = true
 		end
 	end
+
 	return changed
 end
 
