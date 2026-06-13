@@ -15,3 +15,4 @@ data.extend({
 		auto_barrel = true,
 	},
 })
+require("cetrifuge-pipes")
