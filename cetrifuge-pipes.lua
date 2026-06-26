@@ -20,7 +20,7 @@ data.raw["assembling-machine"]["centrifuge"].fluid_boxes = {
 		pipe_covers = pipecoverspictures(),
 		volume = 200,
 		pipe_connections = {
-			{ flow_direction = "output", direction = defines.direction.north, position = { 0, 1 } },
+			{ flow_direction = "output", direction = defines.direction.south, position = { 0, 1 } },
 		},
 	},
 }
